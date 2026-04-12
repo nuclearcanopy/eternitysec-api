@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException, Query
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives import serialization
+
+from app.strength import strength
+
 import random
 import string
 
@@ -22,12 +25,17 @@ def generate_pass(length: int = 8, useUpper: bool = True, useLower: bool = True,
     if pool == "":
         raise HTTPException(400, detail='All options disabled')
 
-    return {"password": ''.join(random.choices(pool, k = length))}
+    password = ''.join(random.choices(pool, k = length))
+    s = strength(password)
+    return {
+        "password": password,
+        "entropy": s["entropy"],
+        "crack_time": s["crack_time"]
+    }
 
 @app.get("/generate-ssh")
 def generate_ssh(name: str = Query(default="", max_length=64)):
     private_key = ed25519.Ed25519PrivateKey.generate()
-
 
     return {
             "private_key": private_key.private_bytes(
@@ -40,3 +48,7 @@ def generate_ssh(name: str = Query(default="", max_length=64)):
                 format = serialization.PublicFormat.OpenSSH
             ).decode() + (" " + name if name else "")
      }
+
+@app.get("/calculate-strength")
+def calculate_strength(password: str = ''):
+    return strength(password)
