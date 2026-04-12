@@ -50,7 +50,7 @@ def strength(password: string):
             suffix = "century"
 
         if n > 0:
-            crack_time_human = str(n) + " " + suffix;   
+            crack_time_human = str(n) + " " + suffix   
             break
 
 
