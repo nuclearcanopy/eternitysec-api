@@ -1,4 +1,4 @@
-# pswdgen-api
+# eternitysec
 
 Dockerized FastAPI microservice that generates passwords + Ed25519 SSH keys and estimates password entropy/crack time. Built for “ship-it” workflows: GitHub Actions CI runs lint + unit tests in a container, and CD publishes versioned images to GitHub Container Registry (GHCR) on `main`.
 
