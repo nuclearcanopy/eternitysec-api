@@ -1,4 +1,8 @@
-import hmac, hashlib, base64, time, struct
+import hmac
+import hashlib
+import base64
+import time
+import struct
 
 def generate_totp(secret: str):
     counter = int(time.time() // 30)

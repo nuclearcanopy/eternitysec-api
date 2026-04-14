@@ -1,6 +1,8 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-import sqlite3, random, string
+import sqlite3
+import random
+import string
 
 ph = PasswordHasher()
 

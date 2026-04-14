@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.strength import strength
-import random, string
+import random
+import string
 
 router = APIRouter()
 
