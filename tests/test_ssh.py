@@ -50,4 +50,4 @@ def test_hash():
     r = client.get("/generate-ssh")
 
     assert r.json()["sha_fingerprint"].startswith("SHA256:")
-    assert len(r.json()["sha_fingerprint"]) == 51
+    assert len(r.json()["sha_fingerprint"]) == 50
