@@ -3,7 +3,6 @@ from app.limiter import limiter
 from pydantic import BaseModel, Field
 from argon2 import PasswordHasher
 from app.database import generate_client_number, insert_client
-import string
 
 router = APIRouter()
 
