@@ -1,60 +1,10 @@
-from fastapi import FastAPI, HTTPException, Query
-from cryptography.hazmat.primitives.asymmetric import ed25519
-from cryptography.hazmat.primitives import serialization
-import hashlib
-import base64
-
-from app.strength import strength
-
-import random
-import string
+from fastapi import FastAPI
+from app.database import init_db
+from app.routers import password, ssh, totp
 
 app = FastAPI()
+init_db()
 
-@app.get("/generate-pass")
-def generate_pass(length: int = 8, useUpper: bool = True, useLower: bool = True, useSpecial: bool = True, useDigits: bool = True):
-    pool = ""
-    
-    if useUpper:
-        pool += string.ascii_uppercase
-    if useLower:
-        pool += string.ascii_lowercase
-    if useSpecial:
-        pool += string.punctuation
-    if useDigits:
-        pool += string.digits
-
-    if pool == "":
-        raise HTTPException(400, detail='All options disabled')
-
-    password = ''.join(random.choices(pool, k = length))
-    s = strength(password)
-    return {
-        "password": password,
-        "entropy": s["entropy"],
-        "crack_time": s["crack_time"]
-    }
-
-@app.get("/generate-ssh")
-def generate_ssh(name: str = Query(default="", max_length=64)):
-    private_key = ed25519.Ed25519PrivateKey.generate()
-
-    return {
-        "private_key": private_key.private_bytes(
-            encoding = serialization.Encoding.PEM,
-            format = serialization.PrivateFormat.OpenSSH,
-            encryption_algorithm = serialization.NoEncryption()
-        ).decode(),
-        "public_key": private_key.public_key().public_bytes(
-            encoding = serialization.Encoding.OpenSSH,
-            format = serialization.PublicFormat.OpenSSH
-        ).decode() + (" " + name if name else ""),
-        "sha_fingerprint": "SHA256:"+base64.b64encode(hashlib.sha256(private_key.public_key().public_bytes(
-            encoding = serialization.Encoding.Raw,
-            format = serialization.PublicFormat.Raw,
-        ))).decode().rstrip('=')
-     }
-
-@app.get("/calculate-strength")
-def calculate_strength(password: str = ''):
-    return strength(password)
+app.include_router(password.router)
+app.include_router(ssh.router)
+app.include_router(totp.router)
