@@ -23,5 +23,5 @@ def generate_ssh(name: str = Query(default="", max_length=64)):
         "sha_fingerprint": "SHA256:"+base64.b64encode(hashlib.sha256(private_key.public_key().public_bytes(
             encoding = serialization.Encoding.Raw,
             format = serialization.PublicFormat.Raw,
-        ))).decode().rstrip('=')
+        )).digest()).decode().rstrip('=')
      }
