@@ -9,7 +9,7 @@ def strength(password: string):
         }
 
 
-    guesses_per_second = 1000000000000 # 1 trillion guesses per second, arbitrary worst-case guess. this would only be realistic if a literal nation-state was targetting you, with multiple 5090s or such
+    guesses_per_second = 1000000000000 # 1 trillion guesses per second, arbitrary worst-case guess. this would only be realistic if a literal nation-state was targeting you, with multiple 5090s or such
     pool = 0
 
     if any(c in string.ascii_lowercase for c in password):
