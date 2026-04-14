@@ -18,10 +18,10 @@ jobs:
         run: docker build -t pswdgen-api:test .
 
       - name: Run linter (ruff)
-        run: docker run --rm pswdgen-api:test --env-file .env ruff check app/
+        run: docker run --rm --env-file .env pswdgen-api:test ruff check app/
         
       - name: Run tests (pytest)
-        run: docker run --rm pswdgen-api:test --env-file .env pytest
+        run: docker run --rm --env-file .env pswdgen-api:test pytest
 
   publish:
     needs: test
