@@ -30,7 +30,7 @@ def generate_pass(length: int = 8, useUpper: bool = True, useLower: bool = True,
         "crack_time": s["crack_time"]
     }
 
-@app.get("/calculate-strength")
+@router.get("/calculate-strength")
 def calculate_strength(password: str = ''):
     return strength(password)
 
