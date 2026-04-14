@@ -1,4 +1,5 @@
-import string, math
+import string
+import math
 
 def strength(password: string):
     if password == '':
