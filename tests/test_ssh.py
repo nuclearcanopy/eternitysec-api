@@ -20,10 +20,11 @@ def test_format():
     assert r.status_code == 200
     
     # formatting
-    assert public_key[:12] == "ssh-ed25519 "
-    assert public_key[-7:] == " Ab01-_"
-    assert private_key[:35] == "-----BEGIN OPENSSH PRIVATE KEY-----"
-    assert private_key.strip()[-33:] == "-----END OPENSSH PRIVATE KEY-----"
+    assert public_key.startswith("ssh-ed25519 ")
+    assert public_key.strip().endswith(" Ab01-_")
+
+    assert private_key.startswith("-----BEGIN OPENSSH PRIVATE KEY-----")
+    assert private_key.strip().endswith("-----END OPENSSH PRIVATE KEY-----")
 
 def test_round_trip():
     r = client.get("/generate-ssh")
@@ -44,3 +45,9 @@ def test_round_trip():
     except InvalidSignature:
         assert False, "ssh signature verification fail"
 
+def test_hash():
+    # would be dumb to check the hash by rehashing as i would be testing hashlib against itself
+    r = client.get("/generate-ssh")
+
+    assert r.json()["sha_fingerprint"].startswith("SHA256:")
+    assert len(r.json()["sha_fingerprint"]) == 51
