@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # eternitysec
+=======
+# pswdgen-api
+>>>>>>> 56325a6 (add readme)
 
 Dockerized FastAPI microservice that generates passwords + Ed25519 SSH keys and estimates password entropy/crack time. Built for “ship-it” workflows: GitHub Actions CI runs lint + unit tests in a container, and CD publishes versioned images to GitHub Container Registry (GHCR) on `main`.
 
@@ -36,8 +40,13 @@ docker run --rm -p 8000:8000 pswdgen-api:local
 
 ### Run with Docker (from GHCR)
 ```bash
+<<<<<<< HEAD
 docker pull ghcr.io/<github-owner>/pswdgen-api:latest
 docker run --rm -p 8000:8000 ghcr.io/<github-owner>/pswdgen-api:latest
+=======
+docker pull ghcr.io/user/pswdgen-api:latest
+docker run --rm -p 8000:8000 ghcr.io/user/pswdgen-api:latest
+>>>>>>> 56325a6 (add readme)
 ```
 
 ## Local development
