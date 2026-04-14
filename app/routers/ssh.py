@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Query
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives import serialization
-import hashlib
-import base64
+import hashlib, base64
 
 router = APIRouter()
 

@@ -1,6 +1,10 @@
 uvicorn
 fastapi
+slowapi
 ruff
 httpx
 pytest
+
 cryptography
+argon2-cffi
+
