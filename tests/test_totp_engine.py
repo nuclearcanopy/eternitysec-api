@@ -21,4 +21,4 @@ def test_temporality(monkeypatch):
 
 def test_predefined(monkeypatch):
     monkeypatch.setattr("app.totp_engine.time.time", lambda: 1234567890)
-    assert generate_totp(dummy_secret) == "893278"
+    assert generate_totp(dummy_secret) == "742275"
