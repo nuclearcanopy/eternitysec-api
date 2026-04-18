@@ -17,7 +17,7 @@ def test_temporality(monkeypatch):
     first = generate_totp(dummy_secret)
     second = generate_totp(dummy_secret)
     real_time = time.time
-    monkeypatch.setattr("app.totp_engine.time.time", lambda: real_time + 30) # i feel so smart for this (not at all impressive) (i caused stack overflow by patching time time to call itself)
+    monkeypatch.setattr("app.totp_engine.time.time", lambda: real_time() + 30) # i feel so smart for this (not at all impressive) (i caused stack overflow by patching time time to call itself)
     assert generate_totp(dummy_secret) != first and first == second
 
 def test_predefined(monkeypatch):
