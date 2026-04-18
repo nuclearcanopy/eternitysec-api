@@ -12,4 +12,5 @@ def generate_totp(secret: str):
 
     offset = result[-1] & 0x0F
     
-    int.from_bytes(result[offset:offset+4], byteorder='big') & 0x7FFFFFFF
+    code = int.from_bytes(result[offset:offset+4], byteorder='big') & 0x7FFFFFFF
+    return str(code % 1_000_000).zfill(6)
