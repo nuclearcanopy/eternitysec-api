@@ -2,8 +2,10 @@ from fastapi import APIRouter, Request, HTTPException
 from app.limiter import limiter
 from pydantic import BaseModel, Field
 from argon2 import PasswordHasher
-from app.crypto import encrypt
-from app.database import generate_client_number, verify_client, insert_client, insert_secret, remove_client, remove_secret
+from app.crypto import encrypt, decrypt
+from app.database import generate_client_number, verify_client, insert_client, insert_secret, remove_client, remove_secret, get_secrets
+from app.totp_engine import generate_totp
+import base64
 
 router = APIRouter()
 
@@ -60,9 +62,21 @@ def delete_secret(request: Request, body: SecretDeleteRequest):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     else:
         remove_secret(body.number, body.label)
-        return {"status": "ok"}
+        return {"status": "ok"}    
 
+@router.get("/totp/codes_encrypted")
+@limiter.limit("3/minute")
+def get_encrypted_codes(request: Request, number: str, pin: str):
+    if not verify_client(number, pin):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    else:
+        return {"secrets": [{"label": label, "encrypted_secret": base64.b64encode(encrypted_secret).decode()} for label, encrypted_secret in get_secrets(number)]}
 
-
-    
+@router.get("/totp/codes")
+@limiter.limit("3/minute")
+def get_codes(request: Request, number: str, pin: str):
+    if not verify_client(number, pin):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    else:
+        return {"codes": [{"label": label, "code": generate_totp(decrypt(encrypted_secret).decode())} for label, encrypted_secret in get_secrets(number)]}
 
