@@ -29,6 +29,10 @@ class SecretDeleteRequest(BaseModel):
     pin: str = Field(min_length=6)
     label: str = Field(min_length=1)
 
+class CodesGetRequest(BaseModel):
+    number: str = Field(min_length=16)
+    pin: str = Field(min_length=6)
+
 @router.post("/totp/account")
 @limiter.limit("3/hour")
 def register_client(request: Request, body: ClientRegisterRequest):
@@ -64,9 +68,11 @@ def delete_secret(request: Request, body: SecretDeleteRequest):
         remove_secret(body.number, body.label)
         return {"status": "ok"}    
 
+# tba: get one specific code, not all at once
+
 @router.get("/totp/codes_encrypted")
 @limiter.limit("3/minute")
-def get_encrypted_codes(request: Request, number: str, pin: str):
+def get_encrypted_codes(request: Request, body: CodesGetRequest):
     if not verify_client(number, pin):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     else:
@@ -74,9 +80,9 @@ def get_encrypted_codes(request: Request, number: str, pin: str):
 
 @router.get("/totp/codes")
 @limiter.limit("3/minute")
-def get_codes(request: Request, number: str, pin: str):
-    if not verify_client(number, pin):
+def get_codes(request: Request, body: CodesGetRequest):
+    if not verify_client(body.number, body.pin):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     else:
-        return {"codes": [{"label": label, "code": generate_totp(decrypt(encrypted_secret).decode())} for label, encrypted_secret in get_secrets(number)]}
+        return {"codes": [{"label": label, "code": generate_totp(decrypt(encrypted_secret).decode())} for label, encrypted_secret in get_secrets(body.number)]}
 
