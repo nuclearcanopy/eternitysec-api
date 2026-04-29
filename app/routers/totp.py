@@ -70,19 +70,18 @@ def delete_secret(request: Request, body: SecretDeleteRequest):
 
 # tba: get one specific code, not all at once
 
-@router.get("/totp/codes_encrypted")
+@router.post("/totp/codes_encrypted")
 @limiter.limit("3/minute")
 def get_encrypted_codes(request: Request, body: CodesGetRequest):
-    if not verify_client(number, pin):
+    if not verify_client(body.number, body.pin):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     else:
-        return {"secrets": [{"label": label, "encrypted_secret": base64.b64encode(encrypted_secret).decode()} for label, encrypted_secret in get_secrets(number)]}
+        return {"secrets": [{"label": label, "encrypted_secret": base64.b64encode(encrypted_secret).decode()} for label, encrypted_secret in get_secrets(body.number)]}
 
-@router.get("/totp/codes")
+@router.post("/totp/codes")
 @limiter.limit("3/minute")
 def get_codes(request: Request, body: CodesGetRequest):
     if not verify_client(body.number, body.pin):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     else:
         return {"codes": [{"label": label, "code": generate_totp(decrypt(encrypted_secret).decode())} for label, encrypted_secret in get_secrets(body.number)]}
-
