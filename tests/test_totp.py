@@ -14,7 +14,7 @@ dummy_secret = "I65VU7K5ZQL7WB4E"
 def client_number():
     r = client.post(
         "/totp/account",
-        json={ pin": dummy_pin }
+        json={ "pin": dummy_pin }
     )
     assert r.status_code == 200
     number = r.json()["client_number"]
