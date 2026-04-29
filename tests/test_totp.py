@@ -45,8 +45,8 @@ def test_post_secret(client_number_with_secret):
     assert len(client_number_with_secret) == 16
 
 def test_get_code(client_number_with_secret):
-    r = client.request(
-        "GET", "/totp/codes", 
+    r = client.post(
+        "/totp/codes",
         json={
             "number": client_number_with_secret,
             "pin": dummy_pin
@@ -57,8 +57,7 @@ def test_get_code(client_number_with_secret):
 
 
 def test_get_codes_schema(client_number_with_secret):
-    r = client.request(
-        "GET",
+    r = client.post(
         "/totp/codes",
         json={
             "number": client_number_with_secret,
