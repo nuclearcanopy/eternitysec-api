@@ -64,8 +64,8 @@ rate limits:
 - `delete /totp/account`: `1/hour`
 - `post /totp/secret`: `1/sec`
 - `delete /totp/secret`: `1/sec`
-- `get /totp/codes`: `3/minute`
-- `get /totp/codes_encrypted`: `3/minute`
+- `post /totp/codes`: `3/minute`
+- `post /totp/codes_encrypted`: `3/minute`
 
 ## endpoints
 
@@ -160,7 +160,7 @@ response:
 - `200` returns `{"status":"ok"}`
 - `401` on invalid credentials
 
-`get /totp/codes`
+`post /totp/codes`
 
 query:
 - `number` (string, 16 digits)
@@ -173,10 +173,12 @@ response:
 example:
 
 ```bash
-curl "http://localhost:8000/totp/codes?number=0000000000000000&pin=123456"
+curl -X POST "http://localhost:8000/totp/codes" \
+  -H "Content-Type: application/json" \
+  -d '{"number":"0000000000000000","pin":"123456"}'
 ```
 
-`get /totp/codes_encrypted`
+`post /totp/codes_encrypted`
 
 query:
 - `number`
