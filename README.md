@@ -1,4 +1,4 @@
-# eternitysec
+# eternitysec-api
 
 fastapi service for password generation, ssh key generation, and totp storage and code generation.
 
@@ -11,13 +11,13 @@ base url is `http://localhost:8000` by default.
 build:
 
 ```bash
-docker build -t eternitysec:local .
+docker build -t eternitysec-api:local .
 ```
 
 run:
 
 ```bash
-docker run --rm -p 8000:8000 -e TOTP_ENCRYPTION_KEY="$(python -c 'import os; print(os.urandom(32).hex())')" eternitysec:local
+docker run --rm -p 8000:8000 -e TOTP_ENCRYPTION_KEY="$(python -c 'import os; print(os.urandom(32).hex())')" eternitysec-api:local
 ```
 
 notes:
@@ -33,7 +33,7 @@ mkdir -p data && touch data/database.db
 docker run --rm -p 8000:8000 \
   -e TOTP_ENCRYPTION_KEY="..." \
   -v "$(pwd)/data/database.db:/app/database.db" \
-  eternitysec:local
+  eternitysec-api:local
 ```
 
 ### local
