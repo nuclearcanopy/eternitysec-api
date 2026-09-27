@@ -1,5 +1,6 @@
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import os
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 key_hex = os.environ.get("TOTP_ENCRYPTION_KEY")
 if not key_hex:
