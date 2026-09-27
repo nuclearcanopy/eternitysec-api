@@ -1,11 +1,21 @@
-from fastapi import APIRouter, Request, HTTPException
-from app.limiter import limiter
-from pydantic import BaseModel, Field
-from argon2 import PasswordHasher
-from app.crypto import encrypt, decrypt
-from app.database import generate_client_number, verify_client, insert_client, insert_secret, remove_client, remove_secret, get_secrets
-from app.totp_engine import generate_totp
 import base64
+
+from argon2 import PasswordHasher
+from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, Field
+
+from app.crypto import decrypt, encrypt
+from app.database import (
+    generate_client_number,
+    get_secrets,
+    insert_client,
+    insert_secret,
+    remove_client,
+    remove_secret,
+    verify_client,
+)
+from app.limiter import limiter
+from app.totp_engine import generate_totp
 
 router = APIRouter()
 
