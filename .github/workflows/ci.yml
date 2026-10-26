@@ -18,10 +18,10 @@ jobs:
         run: docker build -t pswdgen-api:test .
 
       - name: Run linter (ruff)
-        run: docker run --rm --env-file .env pswdgen-api:test ruff check app/
-        
+        run: docker run --rm -e TOTP_ENCRYPTION_KEY="${{ secrets.TOTP_ENCRYPTION_KEY }}" pswdgen-api:test ruff check app/
+
       - name: Run tests (pytest)
-        run: docker run --rm --env-file .env pswdgen-api:test pytest
+        run: docker run --rm -e TOTP_ENCRYPTION_KEY="${{ secrets.TOTP_ENCRYPTION_KEY }}" pswdgen-api:test pytest
 
   publish:
     needs: test
