@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/pswdgen-api
+  IMAGE_NAME: ghcr.io/nuclearcanopy/eternitysec-api
 
 jobs:
   test:
