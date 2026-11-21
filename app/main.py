@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException, Query
-from cryptography.hazmat.primitives.asymmetric import ed25519
-from cryptography.hazmat.primitives import serialization
-import hashlib
 import base64
-
-from app.strength import strength
-
+import hashlib
 import random
 import string
+
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ed25519
+from fastapi import FastAPI, HTTPException, Query
+
+from app.strength import strength
 
 app = FastAPI()
 
