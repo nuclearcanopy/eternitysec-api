@@ -1,5 +1,8 @@
 FROM python:3.12-slim
 
+# openssh-client: ssh-keygen is used by tests/test_ssh.py to cross-check fingerprints
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-client && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY requirements.txt .

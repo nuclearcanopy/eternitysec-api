@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 import random
+import subprocess
 import string
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -45,9 +46,17 @@ def test_round_trip():
     except InvalidSignature:
         assert False, "ssh signature verification fail"
 
-def test_hash():
-    # would be dumb to check the hash by rehashing as i would be testing hashlib against itself
+def test_hash(tmp_path):
     r = client.get("/generate-ssh")
+    fp = r.json()["sha_fingerprint"]
 
-    assert r.json()["sha_fingerprint"].startswith("SHA256:")
-    assert len(r.json()["sha_fingerprint"]) == 51
+    # OpenSSH format: "SHA256:" + unpadded base64 of a 32-byte digest = 43 chars -> 50 total
+    assert fp.startswith("SHA256:")
+    assert "=" not in fp
+    assert len(fp) == 50
+
+    # must equal what ssh-keygen reports for the same public key
+    pub = tmp_path / "key.pub"
+    pub.write_text(r.json()["public_key"] + "\n")
+    out = subprocess.run(["ssh-keygen", "-lf", str(pub)], capture_output=True, text=True, check=True).stdout
+    assert out.split()[1] == fp

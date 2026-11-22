@@ -2,6 +2,7 @@ import base64
 import hashlib
 import random
 import string
+import struct
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
@@ -39,6 +40,13 @@ def generate_pass(length: int = 8, useUpper: bool = True, useLower: bool = True,
 def generate_ssh(name: str = Query(default="", max_length=64)):
     private_key = ed25519.Ed25519PrivateKey.generate()
 
+    # OpenSSH wire-format public blob: string "ssh-ed25519" + string <32 raw key bytes>
+    raw = private_key.public_key().public_bytes(
+        encoding = serialization.Encoding.Raw,
+        format = serialization.PublicFormat.Raw,
+    )
+    blob = struct.pack(">I", 11) + b"ssh-ed25519" + struct.pack(">I", len(raw)) + raw
+
     return {
         "private_key": private_key.private_bytes(
             encoding = serialization.Encoding.PEM,
@@ -49,10 +57,7 @@ def generate_ssh(name: str = Query(default="", max_length=64)):
             encoding = serialization.Encoding.OpenSSH,
             format = serialization.PublicFormat.OpenSSH
         ).decode() + (" " + name if name else ""),
-        "sha_fingerprint": "SHA256:"+base64.b64encode(hashlib.sha256(private_key.public_key().public_bytes(
-            encoding = serialization.Encoding.Raw,
-            format = serialization.PublicFormat.Raw,
-        )).digest()).decode()
+        "sha_fingerprint": "SHA256:" + base64.b64encode(hashlib.sha256(blob).digest()).decode().rstrip("=")
      }
 
 @app.get("/calculate-strength")
